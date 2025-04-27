@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="instructor.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Instructor Class Details - City College of Angeles City</title>
+    <style>
+
+        .sidebar h1 {
+            color: white;
+            text-align: center;
+            font-size: 35px;
+            padding: 0 15px;
+            margin-bottom: 30px;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        
+        .welcome-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-card h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        
+        .schedule-selector {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-selector h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        
+        .schedule-dropdown {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .class-details {
+            background-color: white;
+            padding: 20px;        
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .class-details h3 {
+            margin-top: 0;
+            color: #4CAF50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .export-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .class-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .info-item {
+            margin: 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .student-table th, .student-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .student-table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        
+        .student-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .student-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .no-class {
+            padding: 30px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        /* New styles for semester badge */
+        .semester-badge {
+            background-color: #e6f2ff;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            color: #0066cc;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        /* Status styles */
+        .status-enrolled {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .status-uw {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        .status-loa {
+            color: #FF9800;
+            font-weight: bold;
+        }
+        
+        .status-od {
+            color: #9C27B0;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .status-enrolled-badge {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-uw-badge {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-loa-badge {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        
+        .status-od-badge {
+            background-color: #f3e5f5;
+            color: #6a1b9a;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="instructor-dashboard.html">Dashboard</a>
+        <a class="active">Class Details</a>
+        <a href="InstructorAttendancesheet.html">Attendance Sheet</a>
+        <a href="instructor-seat-plan.html" >Seat Plan</a>
+        <a href="#">Grading Sheet</a>
+        <a href="#">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal - Class Details</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2 id="welcomeMessage">Welcome!</h2>
+            <p id="instructorInfo"></p>
+        </div>
+        
+        <div class="schedule-selector">
+            <h3>Select a Class</h3>
+            <p>Choose a class from your teaching schedule to view student details:</p>
+            <select id="scheduleDropdown" class="schedule-dropdown">
+                <option value="">Select a class...</option>
+                <!-- Options will be populated from instructor's schedule -->
+            </select>
+        </div>
+        
+        <div id="classDetailsContainer" class="class-details" style="display: none;">
+            <h3>
+                <span id="classTitle">Class Details</span>
+                <button class="export-btn" onclick="exportClassDetails()">Export to PDF</button>
+            </h3>
+            
+            <div id="classInfo" class="class-info">
+                <!-- Class information will be displayed here -->
+            </div>
+            
+            <h4>Student List</h4>
+            <div id="studentTableContainer">
+                <table id="studentTable" class="student-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Student Number</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Sex</th>
+                            <th>Email</th>
+                            <th>PWD</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Student data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'student-login.html';
+                return false;
+            }
+            
+            // Set welcome message with instructor's name
+            const welcomeElement = document.getElementById('welcomeMessage');
+            welcomeElement.textContent = `Hello, ${loggedInInstructor.firstName}!`;
+            
+            // Set additional instructor info
+            const infoElement = document.getElementById('instructorInfo');
+            infoElement.textContent = `Welcome to your class details page. You are logged in as ${loggedInInstructor.firstName} ${loggedInInstructor.middleName ? loggedInInstructor.middleName + ' ' : ''}${loggedInInstructor.lastName} (${loggedInInstructor.email}).`;
+            
+            return loggedInInstructor;
+        }
+        
+        // Function to load instructor's schedule
+        function loadInstructorSchedule(instructorEmail) {
+            // Get all schedules from localStorage
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            
+            // Filter schedules for the current instructor
+            return allSchedules.filter(schedule => schedule.instructorEmail === instructorEmail);
+        }
+        
+        // Function to populate the schedule dropdown
+        function populateScheduleDropdown(schedules) {
+            const dropdown = document.getElementById('scheduleDropdown');
+            dropdown.innerHTML = '<option value="">Select a class...</option>';
+            
+            if (schedules.length === 0) {
+                dropdown.innerHTML += '<option disabled>No classes assigned</option>';
+                return;
+            }
+            
+            // Sort schedules by day of week and start time
+            const dayOrder = {
+                'Monday': 1,
+                'Tuesday': 2,
+                'Wednesday': 3,
+                'Thursday': 4,
+                'Friday': 5,
+                'Saturday': 6
+            };
+            
+            schedules.sort((a, b) => {
+                // First by day of week
+                const dayCompare = dayOrder[a.dayOfWeek] - dayOrder[b.dayOfWeek];
+                if (dayCompare !== 0) return dayCompare;
+                
+                // Then by start time
+                return a.startTime.localeCompare(b.startTime);
+            });
+            
+            // Add each schedule to dropdown
+            schedules.forEach((schedule, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                const semesterInfo = schedule.semester ? ` (${schedule.semester})` : '';
+                option.textContent = `${schedule.dayOfWeek} - ${schedule.subjectCode}: ${schedule.subjectTitle} (${schedule.yearLevel} Year, Section ${schedule.section})${semesterInfo}`;
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // Function to get enrolled students for a specific class
+        function getStudentsForClass(institute, course, yearLevel, section) {
+            const allStudents = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+            
+            // Filter students for the specified class
+            return allStudents.filter(student => 
+                student.institute === institute &&
+                student.course === course &&
+                student.yearLevel === yearLevel &&
+                student.section === section
+            );
+        }
+        
+        // Function to get status display for a student
+        function getStatusDisplay(status) {
+            // Ensure a default status if none is set
+            const studentStatus = status || 'Enrolled';
+            
+            // Create a nice looking status badge
+            return `<span class="status-badge status-${studentStatus.toLowerCase()}-badge">${studentStatus}</span>`;
+        }
+        
+        // Function to display class details and student list
+        function displayClassDetails(schedule) {
+            const container = document.getElementById('classDetailsContainer');
+            const classTitle = document.getElementById('classTitle');
+            const classInfo = document.getElementById('classInfo');
+            const studentTableBody = document.getElementById('studentTableBody');
+            
+            // Show the details container
+            container.style.display = 'block';
+            
+            // Set class title with semester information if available
+            const semesterBadge = schedule.semester ? 
+                `<span class="semester-badge">${schedule.semester}</span>` : '';
+            classTitle.innerHTML = `${schedule.subjectCode}: ${schedule.subjectTitle} - ${schedule.yearLevel} Year, Section ${schedule.section} ${semesterBadge}`;
+            
+            // Format time in 12-hour format
+            const formatTime = (timeString) => {
+                const [hours, minutes] = timeString.split(':');
+                const hour = parseInt(hours);
+                const amPm = hour >= 12 ? 'PM' : 'AM';
+                const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+                return `${formattedHour}:${minutes} ${amPm}`;
+            };
+            
+            // Get formatted year level text (1 → 1st, 2 → 2nd, etc.)
+            const yearLevelText = {
+                '1': '1st Year',
+                '2': '2nd Year', 
+                '3': '3rd Year',
+                '4': '4th Year'
+            }[schedule.yearLevel] || `${schedule.yearLevel} Year`;
+            
+            // Set class info with semester information
+            classInfo.innerHTML = `
+                <p class="info-item"><span class="info-label">Subject:</span> ${schedule.subjectCode}: ${schedule.subjectTitle}</p>
+                <p class="info-item"><span class="info-label">Schedule:</span> ${schedule.dayOfWeek}, ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</p>
+                <p class="info-item"><span class="info-label">Room:</span> ${schedule.roomNumber}</p>
+                <p class="info-item"><span class="info-label">Type:</span> ${schedule.classType}</p>
+                <p class="info-item"><span class="info-label">Units:</span> ${schedule.units}</p>
+                <p class="info-item"><span class="info-label">School Year:</span> ${schedule.schoolYear || 'Not specified'}</p>
+                <p class="info-item"><span class="info-label">Semester:</span> ${schedule.semester || 'Not specified'}</p>
+                <p class="info-item"><span class="info-label">Course:</span> ${schedule.course}</p>
+                <p class="info-item"><span class="info-label">Year Level:</span> ${yearLevelText}</p>
+                <p class="info-item"><span class="info-label">Section:</span> ${schedule.section}</p>
+                <p class="info-item"><span class="info-label">Institute:</span> ${schedule.institute}</p>
+            `;
+            
+            // Get students for this class
+            const students = getStudentsForClass(
+                schedule.institute, 
+                schedule.course, 
+                schedule.yearLevel, 
+                schedule.section
+            );
+            
+            // Clear previous student data
+            studentTableBody.innerHTML = '';
+            
+            if (students.length === 0) {
+                // No students found
+                studentTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="no-class">No students enrolled in this class</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sort students alphabetically by last name, then first name
+            students.sort((a, b) => {
+                if (a.lastName < b.lastName) return -1;
+                if (a.lastName > b.lastName) return 1;
+                if (a.firstName < b.firstName) return -1;
+                if (a.firstName > b.firstName) return 1;
+                return 0;
+            });
+            
+            // Populate student table
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.studentNumber}</td>
+                    <td>${student.lastName}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.middleName || ''}</td>
+                    <td>${student.sex}</td>
+                    <td>${student.email}</td>
+                    <td>${student.isPWD}</td>
+                    <td>${getStatusDisplay(student.status)}</td>
+                `;
+                studentTableBody.appendChild(row);
+            });
+        }
+        
+        // Function to export class details to PDF
+        function exportClassDetails() {
+            const selectedIndex = document.getElementById('scheduleDropdown').value;
+            
+            if (!selectedIndex) {
+                alert('Please select a class first.');
+                return;
+            }
+            
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            const instructorSchedules = loadInstructorSchedule(loggedInInstructor.email);
+            const schedule = instructorSchedules[selectedIndex];
+            
+            // Get students for this class
+            const students = getStudentsForClass(
+                schedule.institute, 
+                schedule.course, 
+                schedule.yearLevel, 
+                schedule.section
+            );
+            
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            
+            // Format time in 12-hour format
+            const formatTime = (timeString) => {
+                const [hours, minutes] = timeString.split(':');
+                const hour = parseInt(hours);
+                const amPm = hour >= 12 ? 'PM' : 'AM';
+                const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+                return `${formattedHour}:${minutes} ${amPm}`;
+            };
+            
+            // Get year level text
+            const yearLevelText = {
+                '1': '1st Year',
+                '2': '2nd Year',
+                '3': '3rd Year',
+                '4': '4th Year'
+            }[schedule.yearLevel] || `${schedule.yearLevel} Year`;
+            
+            // Create print content
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Class Details - ${schedule.subjectCode}: ${schedule.subjectTitle}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                        }
+                        .logo {
+                            max-width: 100px;
+                            margin-bottom: 10px;
+                        }
+                        .school-name {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                        }
+                        .class-title {
+                            font-size: 16px;
+                            margin-bottom: 5px;
+                        }
+                        .semester-info {
+                            font-size: 14px;
+                            color: #0066cc;
+                            margin-bottom: 5px;
+                        }
+                        .instructor-name {
+                            font-size: 14px;
+                            margin-bottom: 15px;
+                        }
+                        .details {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin-bottom: 20px;
+                            border: 1px solid #ddd;
+                            padding: 10px;
+                            background-color: #f9f9f9;
+                        }
+                        .detail {
+                            flex: 1 0 200px;
+                            margin-bottom: 5px;
+                        }
+                        .detail-label {
+                            font-weight: bold;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            text-align: right;
+                        }
+                        .signature {
+                            width: 45%;
+                            display: inline-block;
+                        }
+                        .signature-line {
+                            border-top: 1px solid #000;
+                            margin-top: 30px;
+                            padding-top: 5px;
+                            text-align: center;
+                        }
+                        .status-enrolled {
+                            color: #4CAF50;
+                            font-weight: bold;
+                        }
+                        .status-uw {
+                            color: #f44336;
+                            font-weight: bold;
+                        }
+                        .status-loa {
+                            color: #FF9800;
+                            font-weight: bold;
+                        }
+                        .status-od {
+                            color: #9C27B0;
+                            font-weight: bold;
+                        }
+                        @media print {
+                            .no-print {
+                                display: none;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <img src="cca-logo.png" class="logo" alt="CCA Logo">
+                        <div class="school-name">City College of Angeles City</div>
+                        <div class="class-title">${schedule.subjectCode}: ${schedule.subjectTitle}</div>
+                        ${schedule.semester ? `<div class="semester-info">${schedule.semester} - SY ${schedule.schoolYear}</div>` : ''}
+                        <div class="instructor-name">Instructor: ${loggedInInstructor.firstName} ${loggedInInstructor.middleName ? loggedInInstructor.middleName + ' ' : ''}${loggedInInstructor.lastName}</div>
+                    </div>
+                    
+                    <div class="details">
+                        <div class="detail"><span class="detail-label">Schedule:</span> ${schedule.dayOfWeek}, ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</div>
+                        <div class="detail"><span class="detail-label">Room:</span> ${schedule.roomNumber}</div>
+                        <div class="detail"><span class="detail-label">Type:</span> ${schedule.classType}</div>
+                        <div class="detail"><span class="detail-label">Units:</span> ${schedule.units}</div>
+                        <div class="detail"><span class="detail-label">School Year:</span> ${schedule.schoolYear || 'Not specified'}</div>
+                        <div class="detail"><span class="detail-label">Semester:</span> ${schedule.semester || 'Not specified'}</div>
+                        <div class="detail"><span class="detail-label">Course:</span> ${schedule.course}</div>
+                        <div class="detail"><span class="detail-label">Year Level:</span> ${yearLevelText}</div>
+                        <div class="detail"><span class="detail-label">Section:</span> ${schedule.section}</div>
+                        <div class="detail"><span class="detail-label">Institute:</span> ${schedule.institute}</div>
+                        <div class="detail"><span class="detail-label">Total Students:</span> ${students.length}</div>
+                        <div class="detail"><span class="detail-label">Date Printed:</span> ${new Date().toLocaleDateString()}</div>
+                    </div>
+                    
+                    <h3>Student List</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student Number</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Sex</th>
+                                <th>Email</th>
+                                <th>PWD</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `);
+            
+            // Add student rows
+            if (students.length === 0) {
+                printWindow.document.write(`
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 20px;">No students enrolled in this class</td>
+                    </tr>
+                `);
+            } else {
+                students.forEach((student, index) => {
+                    const status = student.status || 'Enrolled'; // Default to 'Enrolled' if not specified
+                    printWindow.document.write(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${student.studentNumber}</td>
+                            <td>${student.lastName}</td>
+                            <td>${student.firstName}</td>
+                            <td>${student.middleName || ''}</td>
+                            <td>${student.sex}</td>
+                            <td>${student.email}</td>
+                            <td>${student.isPWD}</td>
+                            <td class="status-${status.toLowerCase()}">${status}</td>
+                        </tr>
+                    `);
+                });
+            }
+            
+            // Close table and add signature area
+            printWindow.document.write(`
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        <div class="signature">
+                            <div class="signature-line">${loggedInInstructor.firstName} ${loggedInInstructor.lastName}<br>Instructor</div>
+                        </div>
+                    </div>
+                    
+                    <div class="no-print" style="margin-top: 20px; text-align: center;">
+                        <button onclick="window.print()">Print</button>
+                        <button onclick="window.close()">Close</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        }
+        
+        // Function for logout
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear session storage
+                sessionStorage.removeItem('loggedInInstructor');
+                
+                // Redirect to login page
+                window.location.href = 'student-login.html';
+            }
+        }
+        
+        // Run on page load
+        window.onload = function() {
+            // Check if instructor is logged in and get their information
+            const loggedInInstructor = checkLogin();
+            if (!loggedInInstructor) return;
+            
+            // Load instructor's schedule
+            const instructorSchedules = loadInstructorSchedule(loggedInInstructor.email);
+            
+            // Populate schedule dropdown
+            populateScheduleDropdown(instructorSchedules);
+            
+            // Add event listener for schedule selection
+            document.getElementById('scheduleDropdown').addEventListener('change', function() {
+                const selectedIndex = this.value;
+                
+                if (!selectedIndex) {
+                    // Hide class details if no selection
+                    document.getElementById('classDetailsContainer').style.display = 'none';
+                    return;
+                }
+                
+                // Get selected schedule
+                const schedule = instructorSchedules[selectedIndex];
+                
+                // Display class details and student list
+                displayClassDetails(schedule);
+            });
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <title>Instructor Dashboard - City College of Angeles City</title>
+    <style>
+        .main-content {
+            margin-left: 240px;
+            padding: 90px 30px 30px;
+        }
+        
+        .welcome-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-card h2 {
+            color: #006400;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .dashboard-card h3 {
+            background-color: #006400;
+            color: white;
+            padding: 15px 20px;
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        /* Filter container */
+        .filter-container {
+            display: flex;
+            justify-content: flex-start;
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            gap: 10px;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            color: #444;
+        }
+        
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            min-width: 160px;
+        }
+        
+        /* Schedule container styles */
+        .schedule-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        /* Class card design */
+        .class-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .class-header {
+            background-color: #4a7c59;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .class-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .class-type {
+            background-color: #355e3b;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .class-meta {
+            display: flex;
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .meta-item {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .meta-item:not(:last-child) {
+            border-right: 1px solid #ddd;
+        }
+        
+        .meta-label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .meta-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .class-schedule {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .schedule-section {
+            flex: 1;
+        }
+        
+        .schedule-section h4 {
+            background-color: #dbe9db;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            color: #355e3b;
+        }
+        
+        .schedule-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .schedule-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .schedule-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .schedule-value {
+            font-weight: 500;
+        }
+        
+        .class-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .attendance-btn {
+            background-color: #4a7c59;
+            color: white;
+        }
+        
+        .grading-btn {
+            background-color: #355e3b;
+            color: white;
+        }
+        
+        .seatplan-btn {
+            background-color: #2a462f;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .no-schedules {
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            grid-column: span 2;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .schedule-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .no-schedules {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="#" class="active">Dashboard</a>
+        <a href="instructor-class-details.html">Class Records</a>
+        <a href="instructor-approval-letters.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2 id="welcomeMessage">Hello, Instructor!</h2>
+            <p id="instructorInfo">Welcome to your instructor dashboard.</p>
+        </div>
+    
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>Your Teaching Schedule</h3>
+                
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label for="schoolYearFilter">School Year:</label>
+                        <select id="schoolYearFilter" onchange="filterSchedules()">
+                            <option value="all">All School Years</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="semesterFilter">Semester:</label>
+                        <select id="semesterFilter" onchange="filterSchedules()">
+                            <option value="all">All Semesters</option>
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                            <option value="Summer">Summer</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="scheduleContainer" class="schedule-container">
+                    <!-- Schedule cards will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to store instructor schedules
+        let globalInstructorSchedules = [];
+        
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'student-login.html';
+                return;
+            }
+            
+            // Set welcome message with instructor's name
+            const welcomeElement = document.getElementById('welcomeMessage');
+            welcomeElement.textContent = `Hello, ${loggedInInstructor.firstName}!`;
+            
+            // Set additional instructor info
+            const infoElement = document.getElementById('instructorInfo');
+            infoElement.textContent = `Welcome to your instructor dashboard. You are logged in as ${loggedInInstructor.firstName} ${loggedInInstructor.middleName ? loggedInInstructor.middleName + ' ' : ''}${loggedInInstructor.lastName} (${loggedInInstructor.emailAddress}).`;
+            
+            // Load instructor's schedules
+            loadInstructorSchedules(loggedInInstructor.emailAddress);
+        }
+        
+        // Function to load instructor schedules
+        function loadInstructorSchedules(instructorEmail) {
+            // Get all schedules from localStorage
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            
+            // Filter schedules for the current instructor
+            const instructorSchedules = allSchedules.filter(schedule => 
+                schedule.instructorEmail === instructorEmail
+            );
+            
+            // Store schedules globally for filtering
+            globalInstructorSchedules = instructorSchedules;
+            
+            // Populate school year filter dropdown
+            populateSchoolYearFilter(instructorSchedules);
+            
+            // Set current school year as default if available
+            setDefaultSchoolYear();
+            
+            // Display filtered schedules
+            filterSchedules();
+        }
+        
+        // Function to populate school year filter dropdown
+        function populateSchoolYearFilter(schedules) {
+            const schoolYearFilter = document.getElementById('schoolYearFilter');
+            
+            // Clear existing options except "All School Years"
+            while (schoolYearFilter.options.length > 1) {
+                schoolYearFilter.remove(1);
+            }
+            
+            // Get unique school years
+            const schoolYears = [...new Set(schedules.map(schedule => schedule.schoolYear))];
+            
+            // Sort school years chronologically
+            schoolYears.sort();
+            
+            // Add school year options
+            schoolYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                schoolYearFilter.appendChild(option);
+            });
+        }
+        
+        // Function to set default school year (current or most recent)
+        function setDefaultSchoolYear() {
+            const schoolYearFilter = document.getElementById('schoolYearFilter');
+            if (schoolYearFilter.options.length > 1) {
+                // Set most recent school year as default (assuming they are sorted)
+                schoolYearFilter.selectedIndex = 1;
+            }
+        }
+        
+        // Function to filter schedules by school year and semester
+        function filterSchedules() {
+            const selectedYear = document.getElementById('schoolYearFilter').value;
+            const selectedSemester = document.getElementById('semesterFilter').value;
+            
+            let filteredSchedules = [...globalInstructorSchedules];
+            
+            // Filter by school year if not "all"
+            if (selectedYear !== 'all') {
+                filteredSchedules = filteredSchedules.filter(
+                    schedule => schedule.schoolYear === selectedYear
+                );
+            }
+            
+            // Filter by semester if not "all"
+            if (selectedSemester !== 'all') {
+                filteredSchedules = filteredSchedules.filter(
+                    schedule => schedule.semester === selectedSemester
+                );
+            }
+            
+            displaySchedules(filteredSchedules);
+        }
+        
+        // Function to display schedules
+        function displaySchedules(schedules) {
+            // Get the container element
+            const scheduleContainer = document.getElementById('scheduleContainer');
+            
+            // Clear existing content
+            scheduleContainer.innerHTML = '';
+            
+            // If no schedules found
+            if (schedules.length === 0) {
+                scheduleContainer.innerHTML = `
+                    <div class="no-schedules">
+                        <p>No schedules found for the selected criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group schedules by subject code (to combine same subjects)
+            const schedulesBySubject = {};
+            
+            schedules.forEach(schedule => {
+                const subjectCode = schedule.subjectCode;
+                
+                if (!schedulesBySubject[subjectCode]) {
+                    schedulesBySubject[subjectCode] = [];
+                }
+                
+                schedulesBySubject[subjectCode].push(schedule);
+            });
+            
+            // Create HTML for each subject's schedules
+            Object.keys(schedulesBySubject).forEach(subjectCode => {
+                const subjectSchedules = schedulesBySubject[subjectCode];
+                const firstSchedule = subjectSchedules[0]; // Use first schedule for common info
+                
+                // Create class card
+                const classCard = document.createElement('div');
+                classCard.className = 'class-card';
+                
+                // Format time in 12-hour format
+                const formatTime = (timeString) => {
+                    const [hours, minutes] = timeString.split(':');
+                    const hour = parseInt(hours);
+                    const amPm = hour >= 12 ? 'PM' : 'AM';
+                    const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+                    return `${formattedHour}:${minutes} ${amPm}`;
+                };
+                
+                // Build class header
+                let classType = firstSchedule.classType || 'Class';
+                let units = firstSchedule.units || '0';
+                
+                // Header content
+                classCard.innerHTML = `
+                    <div class="class-header">
+                        <div class="class-title">${firstSchedule.subjectCode}: ${firstSchedule.subjectTitle || firstSchedule.subjectCode}</div>
+                        <div class="class-type">${classType} (${units} units)</div>
+                    </div>
+                    
+                    <div class="class-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Section</span>
+                            <span class="meta-value">${firstSchedule.yearLevel || ''}${getOrdinalSuffix(firstSchedule.yearLevel)} Year - ${firstSchedule.section || ''}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Course</span>
+                            <span class="meta-value">${firstSchedule.course ? getCourseAcronym(firstSchedule.course) : 'N/A'}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Institute</span>
+                            <span class="meta-value">${firstSchedule.institute || 'N/A'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Add schedule section
+                const scheduleSection = document.createElement('div');
+                scheduleSection.className = 'class-schedule';
+                
+                // For Lecture/Laboratory type with separate day schedules
+                if (firstSchedule.classType === 'Lecture/Laboratory' && firstSchedule.lectureRoomNumber && firstSchedule.labRoomNumber) {
+                    // Check if we have schedules on different days for lecture and lab
+                    const lectureDay = getDayForRoom(subjectSchedules, firstSchedule.lectureRoomNumber);
+                    const labDay = getDayForRoom(subjectSchedules, firstSchedule.labRoomNumber);
+                    
+                    if (lectureDay && labDay) {
+                        // Lecture schedule
+                        const lectureSection = createScheduleSection('Lecture Schedule', subjectSchedules, lectureDay, firstSchedule.lectureRoomNumber);
+                        scheduleSection.appendChild(lectureSection);
+                        
+                        // Lab schedule
+                        const labSection = createScheduleSection('Laboratory Schedule', subjectSchedules, labDay, firstSchedule.labRoomNumber);
+                        scheduleSection.appendChild(labSection);
+                    } else {
+                        // Fall back to grouping by day
+                        addSchedulesByDay(scheduleSection, subjectSchedules);
+                    }
+                } else {
+                    // Standard scheduling - group by day
+                    addSchedulesByDay(scheduleSection, subjectSchedules);
+                }
+                
+                classCard.appendChild(scheduleSection);
+                
+                // Add footer with action buttons
+                const footerSection = document.createElement('div');
+                footerSection.className = 'class-footer';
+                footerSection.innerHTML = `
+                    <div class="action-buttons">
+                        <button class="action-btn attendance-btn" onclick="navigateTo('attendance', '${firstSchedule.id}')">
+                            Attendance
+                        </button>
+                        <button class="action-btn grading-btn" onclick="navigateTo('grading', '${firstSchedule.id}')">
+                            Grading
+                        </button>
+                        <button class="action-btn seatplan-btn" onclick="navigateTo('seatplan', '${firstSchedule.id}')">
+                            Seat Plan
+                        </button>
+                    </div>
+                `;
+                
+                classCard.appendChild(footerSection);
+                scheduleContainer.appendChild(classCard);
+            });
+        }
+        
+        // Function to determine which day a specific room is used
+        function getDayForRoom(schedules, roomNumber) {
+            for (let schedule of schedules) {
+                if (
+                    (schedule.roomNumber === roomNumber) ||
+                    (schedule.lectureRoomNumber === roomNumber) ||
+                    (schedule.labRoomNumber === roomNumber)
+                ) {
+                    return schedule.dayOfWeek;
+                }
+            }
+            return null;
+        }
+        
+        // Function to create a schedule section (for lecture/lab)
+        function createScheduleSection(title, schedules, day, roomNumber) {
+            const section = document.createElement('div');
+            section.className = 'schedule-section';
+            section.innerHTML = `<h4>${title}</h4>`;
+            
+            const detailsContainer = document.createElement('div');
+            detailsContainer.className = 'schedule-details';
+            
+            // Find matching schedule for this day and room
+            const matchingSchedule = schedules.find(s => 
+                s.dayOfWeek === day && 
+                (s.roomNumber === roomNumber || s.lectureRoomNumber === roomNumber || s.labRoomNumber === roomNumber)
+            );
+            
+            if (matchingSchedule) {
+                // Day
+                const dayItem = document.createElement('div');
+                dayItem.className = 'schedule-item';
+                dayItem.innerHTML = `
+                    <span class="schedule-label">Day</span>
+                    <span class="schedule-value">${day}</span>
+                `;
+                detailsContainer.appendChild(dayItem);
+                
+                // Time
+                const timeItem = document.createElement('div');
+                timeItem.className = 'schedule-item';
+                timeItem.innerHTML = `
+                    <span class="schedule-label">Time</span>
+                    <span class="schedule-value">${formatTime(matchingSchedule.startTime)} - ${formatTime(matchingSchedule.endTime)}</span>
+                `;
+                detailsContainer.appendChild(timeItem);
+                
+                // Room
+                const roomItem = document.createElement('div');
+                roomItem.className = 'schedule-item';
+                roomItem.innerHTML = `
+                    <span class="schedule-label">Room</span>
+                    <span class="schedule-value">${roomNumber}</span>
+                `;
+                detailsContainer.appendChild(roomItem);
+            }
+            
+            section.appendChild(detailsContainer);
+            return section;
+        }
+        
+        // Function to add schedules grouped by day
+        function addSchedulesByDay(container, subjectSchedules) {
+            // Group schedules by day
+            const schedulesByDay = {};
+            subjectSchedules.forEach(schedule => {
+                const day = schedule.dayOfWeek;
+                if (!schedulesByDay[day]) {
+                    schedulesByDay[day] = [];
+                }
+                schedulesByDay[day].push(schedule);
+            });
+            
+            // Add schedules for each day
+            Object.keys(schedulesByDay).forEach(day => {
+                const daySchedules = schedulesByDay[day];
+                
+                const daySection = document.createElement('div');
+                daySection.className = 'schedule-section';
+                daySection.innerHTML = `<h4>${day}</h4>`;
+                
+                const detailsContainer = document.createElement('div');
+                detailsContainer.className = 'schedule-details';
+                
+                daySchedules.forEach(schedule => {
+                    // Time
+                    const timeItem = document.createElement('div');
+                    timeItem.className = 'schedule-item';
+                    timeItem.innerHTML = `
+                        <span class="schedule-label">Time</span>
+                        <span class="schedule-value">${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</span>
+                    `;
+                    detailsContainer.appendChild(timeItem);
+                    
+                    // Room
+                    const roomItem = document.createElement('div');
+                    roomItem.className = 'schedule-item';
+                    
+                    // Get room display based on class type
+                    let roomDisplay;
+                    if (schedule.classType === 'Lecture/Laboratory') {
+                        if (schedule.lectureRoomNumber && schedule.labRoomNumber) {
+                            // For combined display when both are in the same day
+                            roomDisplay = `Lec: ${schedule.lectureRoomNumber}, Lab: ${schedule.labRoomNumber}`;
+                        } else {
+                            roomDisplay = schedule.roomNumber || 'N/A';
+                        }
+                    } else {
+                        roomDisplay = schedule.roomNumber || 'N/A';
+                    }
+                    
+                    roomItem.innerHTML = `
+                        <span class="schedule-label">Room</span>
+                        <span class="schedule-value">${roomDisplay}</span>
+                    `;
+                    detailsContainer.appendChild(roomItem);
+                });
+                
+                daySection.appendChild(detailsContainer);
+                container.appendChild(daySection);
+            });
+        }
+        
+        // Format time from 24-hour to 12-hour format 
+        function formatTime(timeString) {
+            if (!timeString) return 'N/A';
+            
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const amPm = hour >= 12 ? 'PM' : 'AM';
+            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+            return `${formattedHour}:${minutes} ${amPm}`;
+        }
+        
+        // Function to extract course acronym (e.g., BSCS from "Bachelor of Science in Computer Science")
+        function getCourseAcronym(course) {
+            if (!course) return 'N/A';
+            
+            // Try to extract the acronym from "Bachelor of Science in..." format
+            const match = course.match(/Bachelor of (Science|Arts) in (.+)/i);
+            if (match) {
+                const type = match[1].charAt(0); // S or A
+                const discipline = match[2];
+                
+                // Extract first letter of each significant word
+                const words = discipline.split(' ');
+                let acronym = 'B' + type;
+                
+                for (let word of words) {
+                    // Skip common words like "and", "of", etc.
+                    if (word.toLowerCase() === 'and' || 
+                        word.toLowerCase() === 'of' || 
+                        word.toLowerCase() === 'in' ||
+                        word.toLowerCase() === 'the') {
+                        continue;
+                    }
+                    acronym += word.charAt(0);
+                }
+                
+                return acronym;
+            }
+            
+            // If no match, return the last part of the course name
+            const parts = course.split(' ');
+            if (parts.length > 0) {
+                return parts[parts.length - 1];
+            }
+            
+            return course;
+        }
+        
+        // Function to navigate to different pages with schedule ID
+        function navigateTo(page, scheduleId) {
+            // Store the selected schedule ID in sessionStorage
+            sessionStorage.setItem('selectedScheduleId', scheduleId);
+            
+            // Navigate to the appropriate page
+            switch (page) {
+                case 'attendance':
+                    window.location.href = 'InstructorAttendancesheet.html';
+                    break;
+                case 'grading':
+                    window.location.href = 'instructor-grading-sheet.html';
+                    break;
+                case 'seatplan':
+                    window.location.href = 'instructor-seat-plan.html';
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        // Helper function to get ordinal suffix for year level
+        function getOrdinalSuffix(number) {
+            if (!number) return '';
+            
+            const num = parseInt(number);
+            if (isNaN(num)) return '';
+            
+            if (num === 1) return 'st';
+            if (num === 2) return 'nd';
+            if (num === 3) return 'rd';
+            return 'th';
+        }
+        
+        // Function to logout
+        function logout() {
+            // Clear the logged in instructor from sessionStorage
+            sessionStorage.removeItem('loggedInInstructor');
+            
+            // Redirect to login page
+            window.location.href = 'student-login.html';
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            checkLogin();
+        };
+    </script>
+</body>
+</html>
